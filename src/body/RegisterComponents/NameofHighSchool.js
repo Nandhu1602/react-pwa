@@ -1,7 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import TextField from "@mui/material/TextField";
-import Autocomplete, { autocompleteClasses, createFilterOptions } from "@mui/material/Autocomplete";
+import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ListSubheader from "@mui/material/ListSubheader";
 import Popper from "@mui/material/Popper";

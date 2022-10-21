@@ -32,7 +32,7 @@ import axios from "axios";
 
 
 const PreferenceMotivation = (props, ref) => {
-  const [collegeType, setCollegeType] = useState([]);
+  const [collegeType, setCollegeType] = useState("");
   const [fieldOfStudy, setFieldOfStudy] = useState(null);
   const [regiliousAffliations, setReligiousAffliations] = useState(null);
   const [specializedMission, setSpecializedMission] = useState(null);
@@ -52,16 +52,17 @@ const PreferenceMotivation = (props, ref) => {
   }))
 
   const postPreference = (event) => {
+
     var PreferenceMotivation = {
       "CollegeType": collegeType,
       "FieldOfStudy": fieldOfStudy,
       "ReligiousAffliation": regiliousAffliations,
       "SpecializedMission": specializedMission,
       "Location": location,
-      "SchoolSize": schoolSize,
-      "Urbanicity": urbanicity,
-      "ReasonsToAttendCollege": reasonsToAttendCollege,
-      "KeyConsiderations": keyConsiderations,
+      "SchoolSize": JSON.stringify(schoolSize),
+      "Urbanicity": JSON.stringify(urbanicity),
+      "ReasonsToAttendCollege": JSON.stringify(reasonsToAttendCollege),
+      "KeyConsiderations": JSON.stringify(keyConsiderations),
       "AffinityScore": affinityScore,
       "AffordabilityScore": affordabilityScore,
       "AdmissibilityScore": admissibilityScore,
@@ -69,6 +70,8 @@ const PreferenceMotivation = (props, ref) => {
 
     axios.post('https://collegeportfoliobackendnode.azurewebsites.net/student/preference', PreferenceMotivation)
     .then((resp) => console.log(resp))
+
+    console.log(PreferenceMotivation)
   };
 
   const handleReligiousAffliations = (event) => {
@@ -129,6 +132,18 @@ const PreferenceMotivation = (props, ref) => {
     }else{
       setScoreError(true);
     }
+  }
+
+  const handleCollegeType = (value) => {
+    var str = [];
+    value.map((ele) => str.push(ele.title))
+    setCollegeType(String(str))
+  }
+
+  const handleLocation = (value) => {
+    var str = [];
+    value.map((ele) => str.push(ele.name))
+    setLocation(String(str))
   }
 
   const handleAffinityScore = (event) => {
@@ -258,7 +273,7 @@ const PreferenceMotivation = (props, ref) => {
                   options={collegePreferenceOptions}
                   getOptionLabel={(option) => option.title}
                   onChange={(event, value) => {
-                    setCollegeType(value.map((el) => el.value));
+                    handleCollegeType(value);
                   }
                   }
                   filterSelectedOptions
@@ -277,16 +292,14 @@ const PreferenceMotivation = (props, ref) => {
                   getOptionLabel={(option) => option.FOS}
                   filterSelectedOptions
                   onChange={(event, value) =>
-                    setFieldOfStudy(value)
+                    setFieldOfStudy(value.FOS)
                   }
                   sx={{ mb: 2 }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       required
-                      value={(option) => option.Fos}
                       label="Field of Study"
-                      placeholder="Field of Study"
                     />
                   )}
                 />
@@ -342,7 +355,7 @@ const PreferenceMotivation = (props, ref) => {
                   id="location-preference"
                   options={State.getStatesOfCountry("US")}
                   getOptionLabel={(option) => option.name}
-                  onChange={(event, value) => setLocation(value.map((el) => el.name))}
+                  onChange={(event, value) => handleLocation(value)}
                   sx={{ mb: 2 }}
                   renderInput={(params) => (
                     <TextField

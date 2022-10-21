@@ -16,7 +16,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-import { MDBCard, MDBCardBody, MDBCol, MDBRow } from "mdb-react-ui-kit";
+import { MDBCard, MDBCardBody, MDBRow } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router";
 import DemographicInformation from "./RegisterComponents/DemographicInformation";
 import AcademicProfile from "./RegisterComponents/AcademicProfile";
@@ -99,6 +99,7 @@ export default function DialogBox() {
       {/* <Button variant="outlined" onClick={handleClickOpen}>
         Slide in alert dialog
       </Button> */}
+
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -106,7 +107,7 @@ export default function DialogBox() {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{(who == 1?student[activeStep]:parent[activeStep])}</DialogTitle>
+        <DialogTitle>{(who === 1?student[activeStep]:parent[activeStep])}</DialogTitle>
         <DialogContent>
           <div>
             <Box sx={{ maxWidth: "100%", flexGrow: 1 }}>

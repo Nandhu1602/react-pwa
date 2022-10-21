@@ -19,7 +19,6 @@ import TabPanel from "@mui/lab/TabPanel";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
-import NameofSchool from "./NameofHighSchool";
 import NameofHighSchool from "./NameofHighSchool";
 
 const AcademicProfile = (props, ref) => {
