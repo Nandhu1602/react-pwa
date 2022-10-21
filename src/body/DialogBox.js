@@ -163,7 +163,7 @@ export default function DialogBox() {
               activeStep={activeStep}
               sx={{ maxWidth: "100%", flexGrow: 1 }}
               nextButton={
-                <Button type="submit" size="small" onClick={handleNext} >
+                <Button type="submit" size="small" onClick={handleNext} disabled={haveError}>
                   {activeStep < 4 ? "Next" : "Submit"}
                   {theme.direction === "rtl" ? (
                     <KeyboardArrowLeft />
