@@ -1,4 +1,4 @@
-import React, {useState, forwardRef, useImperativeHandle } from "react";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { MDBRow, MDBCol, MDBCard, MDBCardBody } from "mdb-react-ui-kit";
 import {
   Checkbox,
@@ -18,18 +18,24 @@ import {
   ThemeProvider,
   Input,
   InputAdornment,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import PercentIcon from "@mui/icons-material/Percent";
 import FOS from "./fos";
-import {State } from "country-state-city";
+import { State } from "country-state-city";
 import axios from "axios";
+import { CheckBox } from "@mui/icons-material";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import state from "country-state-city/lib/state";
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-
-  var affor1 = 0;
-  var affi1 = 0;
-  var admm1 = 0;
-
+var affor1 = 0;
+var affi1 = 0;
+var admm1 = 0;
 
 const PreferenceMotivation = (props, ref) => {
   const [collegeType, setCollegeType] = useState("");
@@ -45,39 +51,40 @@ const PreferenceMotivation = (props, ref) => {
   const [affordabilityScore, setAffordalibityScore] = useState(0);
   const [admissibilityScore, setAdmissibilityScore] = useState(0);
   const [scoreError, setScoreError] = useState(false);
+  const [scoreClicked, setScoreClicked] = useState(false);
 
-
-  useImperativeHandle(ref, ()=>({
+  useImperativeHandle(ref, () => ({
     postPreference,
-  }))
+  }));
 
   const postPreference = (event) => {
-
     var PreferenceMotivation = {
-      "CollegeType": collegeType,
-      "FieldOfStudy": fieldOfStudy,
-      "ReligiousAffliation": regiliousAffliations,
-      "SpecializedMission": specializedMission,
-      "Location": location,
-      "SchoolSize": JSON.stringify(schoolSize),
-      "Urbanicity": JSON.stringify(urbanicity),
-      "ReasonsToAttendCollege": JSON.stringify(reasonsToAttendCollege),
-      "KeyConsiderations": JSON.stringify(keyConsiderations),
-      "AffinityScore": affinityScore,
-      "AffordabilityScore": affordabilityScore,
-      "AdmissibilityScore": admissibilityScore,
+      CollegeType: collegeType,
+      FieldOfStudy: fieldOfStudy,
+      ReligiousAffliation: regiliousAffliations,
+      SpecializedMission: specializedMission,
+      Location: location,
+      SchoolSize: JSON.stringify(schoolSize),
+      Urbanicity: JSON.stringify(urbanicity),
+      ReasonsToAttendCollege: JSON.stringify(reasonsToAttendCollege),
+      KeyConsiderations: JSON.stringify(keyConsiderations),
+      AffinityScore: affinityScore,
+      AffordabilityScore: affordabilityScore,
+      AdmissibilityScore: admissibilityScore,
     };
 
-    axios.post('https://collegeportfoliobackendnode.azurewebsites.net/student/preference', PreferenceMotivation)
-    .then((resp) => console.log(resp))
+    axios
+      .post(
+        "https://collegeportfoliobackendnode.azurewebsites.net/student/preference",
+        PreferenceMotivation
+      )
+      .then((resp) => console.log(resp));
 
-    console.log(PreferenceMotivation)
+    console.log(PreferenceMotivation);
   };
 
   const handleReligiousAffliations = (event) => {
     setReligiousAffliations(event.target.value);
-
-    alert(event.target.value);
   };
 
   const handleSpecializedMission = (event) => {
@@ -124,46 +131,49 @@ const PreferenceMotivation = (props, ref) => {
     }));
   };
 
- 
   const validate = () => {
-    var total = affor1+affi1+admm1
-    if((total === 100) || (total === 99)){
+    var total = affor1 + affi1 + admm1;
+    if (total === 100 || total === 99) {
       setScoreError(false);
-    }else{
+    } else {
       setScoreError(true);
     }
-  }
+  };
 
   const handleCollegeType = (value) => {
     var str = [];
-    value.map((ele) => str.push(ele.title))
-    setCollegeType(String(str))
-  }
+    value.map((ele) => str.push(ele.title));
+    setCollegeType(String(str));
+  };
 
   const handleLocation = (value) => {
     var str = [];
-    value.map((ele) => str.push(ele.name))
-    setLocation(String(str))
-  }
+    value.map((ele) => str.push(ele.name));
+    setLocation(String(str));
+  };
 
   const handleAffinityScore = (event) => {
     var val = parseInt(event.target.value);
-    affi1 = (val>=0)?(val>100)?100:val: 0;
+    affi1 = val >= 0 ? (val > 100 ? 100 : val) : 0;
     validate();
     setAffinityScore(affi1);
+    setScoreClicked(true);
   };
 
   const handleAdmissibilityScore = (event) => {
     var val = parseInt(event.target.value);
-    admm1 = (val>=0)?(val>100)?100:val: 0;    validate();
-    setAdmissibilityScore(admm1)
+    admm1 = val >= 0 ? (val > 100 ? 100 : val) : 0;
+    validate();
+    setAdmissibilityScore(admm1);
+    setScoreClicked(true);
   };
 
   const handleAffordabilityScore = (event) => {
     var val = parseInt(event.target.value);
-    affor1 = (val>=0)?(val>100)?100:val: 0;  
+    affor1 = val >= 0 ? (val > 100 ? 100 : val) : 0;
     validate();
-    setAffordalibityScore(affor1)
+    setAffordalibityScore(affor1);
+    setScoreClicked(true);
   };
 
   const collegePreferenceOptions = [
@@ -244,20 +254,19 @@ const PreferenceMotivation = (props, ref) => {
       props.handleError(false);
     }
 
-    if(!keyConsiderations[1]){
+    if (!keyConsiderations[1]) {
       affi1 = 0;
       setAffinityScore(affi1);
       validate();
-    }else if(!keyConsiderations[2]){
+    } else if (!keyConsiderations[2]) {
       affor1 = 0;
       setAffordalibityScore(affor1);
       validate();
-    }else if(!keyConsiderations[3]){
-      admm1 =0;
+    } else if (!keyConsiderations[3]) {
+      admm1 = 0;
       setAdmissibilityScore(admm1);
       validate();
     }
-
   });
 
   return (
@@ -274,8 +283,7 @@ const PreferenceMotivation = (props, ref) => {
                   getOptionLabel={(option) => option.title}
                   onChange={(event, value) => {
                     handleCollegeType(value);
-                  }
-                  }
+                  }}
                   filterSelectedOptions
                   sx={{ mb: 2 }}
                   renderInput={(params) => (
@@ -291,16 +299,10 @@ const PreferenceMotivation = (props, ref) => {
                   options={FOS.Fields}
                   getOptionLabel={(option) => option.FOS}
                   filterSelectedOptions
-                  onChange={(event, value) =>
-                    setFieldOfStudy(value.FOS)
-                  }
+                  onChange={(event, value) => setFieldOfStudy(value.FOS)}
                   sx={{ mb: 2 }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      required
-                      label="Field of Study"
-                    />
+                    <TextField {...params} required label="Field of Study" />
                   )}
                 />
               </MDBCol>
@@ -352,16 +354,25 @@ const PreferenceMotivation = (props, ref) => {
               <MDBCol md="12">
                 <Autocomplete
                   multiple
-                  id="location-preference"
-                  options={State.getStatesOfCountry("US")}
+                  options={state.getStatesOfCountry("US")}
+                  disableCloseOnSelect
                   getOptionLabel={(option) => option.name}
-                  onChange={(event, value) => handleLocation(value)}
-                  sx={{ mb: 2 }}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option.name}
+                    </li>
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      required
-                      label="Choose preferred states"
+                      label="Checkboxes"
+                      placeholder="Favorites"
                     />
                   )}
                 />
@@ -391,181 +402,190 @@ const PreferenceMotivation = (props, ref) => {
             </MDBRow>
             <MDBRow>
               <MDBCol md="12">
-                  <FormLabel component="legend">Urbanicity</FormLabel>
-                  <FormGroup aria-label="position" row>
-                    {urbanicityOption.map((option) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            value={option.value}
-                            onChange={handleUrbanicity}
-                          />
-                        }
-                        label={option.title}
-                        labelPlacement="end"
-                        onChange={handleUrbanicity}
-                      />
-                    ))}
-                  </FormGroup>
+                <FormLabel component="legend">Urbanicity</FormLabel>
+                <FormGroup aria-label="position" row>
+                  {urbanicityOption.map((option) => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          value={option.value}
+                          onChange={handleUrbanicity}
+                        />
+                      }
+                      label={option.title}
+                      labelPlacement="end"
+                      onChange={handleUrbanicity}
+                    />
+                  ))}
+                </FormGroup>
               </MDBCol>
             </MDBRow>
             <MDBRow>
               <MDBCol md="6">
-                  <FormLabel component="legend" required>
-                    Your reasons to attend college
-                  </FormLabel>
-                  <FormGroup aria-label="position">
-                    <br />
-                    {reasonsToAttendCollegeOptions.map((option) => (
-                      <Grid direction="row">
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              value={option.value}
-                              onChange={handleReasonsToAttendCollege}
-                            />
-                          }
-                          label={option.title}
-                          labelPlacement="end"
-                          onChange={handleReasonsToAttendCollege}
-                        />
-                        <Tooltip
-                          style={{ marginLeft: "-20px" }}
-                          title={option.info}
-                        >
-                          <IconButton>
-                            <InfoIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                    ))}
-                  </FormGroup>
+                <FormLabel component="legend" required>
+                  Your reasons to attend college
+                </FormLabel>
+                <FormGroup aria-label="position">
+                  <br />
+                  {reasonsToAttendCollegeOptions.map((option) => (
+                    <Grid direction="row">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            value={option.value}
+                            onChange={handleReasonsToAttendCollege}
+                          />
+                        }
+                        label={option.title}
+                        labelPlacement="end"
+                        onChange={handleReasonsToAttendCollege}
+                      />
+                      <Tooltip
+                        style={{ marginLeft: "-20px" }}
+                        title={option.info}
+                      >
+                        <IconButton>
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Grid>
+                  ))}
+                </FormGroup>
               </MDBCol>
               <MDBCol md="6" sx={{ mb: 2 }}>
-                  <FormLabel component="legend" required>
-                    Key selection considerations and importance
-                  </FormLabel>
-                  <FormGroup aria-label="position">
-                    <Grid direction="row">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            value="1"
-                            onChange={handleKeyConsiderations}
-                          />
-                        }
-                        label={"Affinity"}
-                        labelPlacement="end"
-                        onChange={handleKeyConsiderations}
-                      />
-                      <Tooltip
-                        style={{ marginLeft: "-20px" }}
-                        title={
-                          "Takes into account factors such as college's reputation, ranking, campus safety, transporation access, weather, and perceived cultural fit"
-                        }
-                      >
-                        <IconButton>
-                          <InfoIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <div style={{ float: "right" }}>
-                        <Input
-                          error={scoreError&(keyConsiderations[1])}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <PercentIcon style={{ fontSize: "1em" }} />
-                            </InputAdornment>
-                          }
-                          style={{
-                            width: "50px",
-                          }}
-                          value={affinityScore}
-                          onChange={handleAffinityScore}
-                          disabled={!keyConsiderations[1]}
+                <FormLabel component="legend" required>
+                  Key selection considerations and importance
+                </FormLabel>
+                <FormGroup aria-label="position">
+                  <Grid direction="row">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          value="1"
+                          onChange={handleKeyConsiderations}
                         />
-                      </div>
-                    </Grid>
-                    <Grid direction="row">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            value="2"
-                            onChange={handleKeyConsiderations}
-                          />
+                      }
+                      label={"Affinity"}
+                      labelPlacement="end"
+                      onChange={handleKeyConsiderations}
+                    />
+                    <Tooltip
+                      style={{ marginLeft: "-20px" }}
+                      title={
+                        "Takes into account factors such as college's reputation, ranking, campus safety, transporation access, weather, and perceived cultural fit"
+                      }
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <div style={{ float: "right" }}>
+                      <Input
+                        error={scoreError & keyConsiderations[1]}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <PercentIcon style={{ fontSize: "1em" }} />
+                          </InputAdornment>
                         }
-                        label="Affordability"
-                        labelPlacement="end"
-                        onChange={handleKeyConsiderations}
+                        style={{
+                          width: "50px",
+                        }}
+                        value={affinityScore}
+                        onChange={handleAffinityScore}
+                        disabled={!keyConsiderations[1]}
                       />
-                      <Tooltip
-                        style={{ marginLeft: "-20px" }}
-                        title={"Whether I/we can afford it "}
-                      >
-                        <IconButton>
-                          <InfoIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <div style={{ float: "right" }}>
-                        <Input
-                          error={scoreError&(keyConsiderations[2])}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <PercentIcon style={{ fontSize: "1em" }} />
-                            </InputAdornment>
-                          }
-                          style={{
-                            width: "50px",
-                          }}
-                          value={affordabilityScore}
-                          onChange={handleAffordabilityScore}
-                          disabled={!keyConsiderations[2]}
+                    </div>
+                  </Grid>
+                  <Grid direction="row">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          value="2"
+                          onChange={handleKeyConsiderations}
                         />
-                      </div>
-                    </Grid>
-                    <Grid direction="row">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            value="3"
-                            onChange={handleKeyConsiderations}
-                          />
+                      }
+                      label="Affordability"
+                      labelPlacement="end"
+                      onChange={handleKeyConsiderations}
+                    />
+                    <Tooltip
+                      style={{ marginLeft: "-20px" }}
+                      title={"Whether I/we can afford it "}
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <div style={{ float: "right" }}>
+                      <Input
+                        error={scoreError & keyConsiderations[2]}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <PercentIcon style={{ fontSize: "1em" }} />
+                          </InputAdornment>
                         }
-                        label="Admissibility"
-                        labelPlacement="end"
-                        onChange={handleKeyConsiderations}
+                        style={{
+                          width: "50px",
+                        }}
+                        value={affordabilityScore}
+                        onChange={handleAffordabilityScore}
+                        disabled={!keyConsiderations[2]}
                       />
-                      <Tooltip
-                        style={{ marginLeft: "-20px" }}
-                        title={"Student's chances of getting admitted."}
-                      >
-                        <IconButton>
-                          <InfoIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <div style={{ float: "right" }}>
-                        <Input
-                          error={scoreError&(keyConsiderations[3])}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <PercentIcon style={{ fontSize: "1em" }} />
-                            </InputAdornment>
-                          }
-                          style={{
-                            width: "50px",
-                          }}
-                          value={admissibilityScore}
-                          onChange={handleAdmissibilityScore}
-                          disabled={!keyConsiderations[3]}
+                    </div>
+                  </Grid>
+                  <Grid direction="row">
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          value="3"
+                          onChange={handleKeyConsiderations}
                         />
-                      </div>
-                    </Grid>
-                  </FormGroup>
+                      }
+                      label="Admissibility"
+                      labelPlacement="end"
+                      onChange={handleKeyConsiderations}
+                    />
+                    <Tooltip
+                      style={{ marginLeft: "-20px" }}
+                      title={"Student's chances of getting admitted."}
+                    >
+                      <IconButton>
+                        <InfoIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <div style={{ float: "right" }}>
+                      <Input
+                        error={scoreError & keyConsiderations[3]}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <PercentIcon style={{ fontSize: "1em" }} />
+                          </InputAdornment>
+                        }
+                        style={{
+                          width: "50px",
+                        }}
+                        value={admissibilityScore}
+                        onChange={handleAdmissibilityScore}
+                        disabled={!keyConsiderations[3]}
+                      />
+                    </div>
+                  </Grid>
+                </FormGroup>
               </MDBCol>
             </MDBRow>
+
+            <Snackbar open={scoreError & scoreClicked} autoHideDuration={6000}>
+              <Alert
+                severity="error"
+                sx={{ width: "100%" }}
+              >
+                Scores percentage should scale upto 100
+              </Alert>
+            </Snackbar>
           </MDBCardBody>
         </MDBCard>
       </ThemeProvider>
     </div>
   );
-}
+};
 export default forwardRef(PreferenceMotivation);

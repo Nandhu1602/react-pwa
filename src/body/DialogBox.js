@@ -107,7 +107,7 @@ export default function DialogBox() {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{(who === 1?student[activeStep]:parent[activeStep])}</DialogTitle>
+        <DialogTitle>{who == 1?student[activeStep]:parent[activeStep]}</DialogTitle>
         <DialogContent>
           <div>
             <Box sx={{ maxWidth: "100%", flexGrow: 1 }}>
@@ -163,7 +163,7 @@ export default function DialogBox() {
               activeStep={activeStep}
               sx={{ maxWidth: "100%", flexGrow: 1 }}
               nextButton={
-                <Button type="submit" size="small" onClick={handleNext} disabled={haveError}>
+                <Button type="submit" size="small" onClick={handleNext} disabled={false}>
                   {activeStep < 4 ? "Next" : "Submit"}
                   {theme.direction === "rtl" ? (
                     <KeyboardArrowLeft />
